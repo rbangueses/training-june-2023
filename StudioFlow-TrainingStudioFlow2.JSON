@@ -1,0 +1,225 @@
+{
+    "description": "A New Flow",
+    "states": [
+      {
+        "name": "Trigger",
+        "type": "trigger",
+        "transitions": [
+          {
+            "event": "incomingMessage"
+          },
+          {
+            "next": "getDetails",
+            "event": "incomingCall"
+          },
+          {
+            "event": "incomingConversationMessage"
+          },
+          {
+            "event": "incomingRequest"
+          },
+          {
+            "event": "incomingParent"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -100,
+            "y": -410
+          }
+        }
+      },
+      {
+        "name": "welcome",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "gather_reason",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 170,
+            "y": 120
+          },
+          "loop": 1,
+          "say": "Hello {{widgets.getDetails.parsed.name}} . Welcome to Company X insurance"
+        }
+      },
+      {
+        "name": "gather_reason",
+        "type": "gather-input-on-call",
+        "transitions": [
+          {
+            "next": "split_1",
+            "event": "keypress"
+          },
+          {
+            "event": "speech"
+          },
+          {
+            "event": "timeout"
+          }
+        ],
+        "properties": {
+          "speech_timeout": "auto",
+          "offset": {
+            "x": 230,
+            "y": 440
+          },
+          "loop": 1,
+          "finish_on_key": "#",
+          "say": "Press 1 for sales, 2 for support",
+          "stop_gather": true,
+          "gather_language": "en",
+          "profanity_filter": "true",
+          "timeout": 5
+        }
+      },
+      {
+        "name": "split_1",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "say_play_1",
+            "event": "noMatch"
+          },
+          {
+            "next": "send_to_flex_sales",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 1",
+                "arguments": [
+                  "{{widgets.gather_reason.Digits}}"
+                ],
+                "type": "equal_to",
+                "value": "1"
+              }
+            ]
+          },
+          {
+            "next": "send_to_flex_support",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 2",
+                "arguments": [
+                  "{{widgets.gather_reason.Digits}}"
+                ],
+                "type": "equal_to",
+                "value": "2"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.gather_reason.Digits}}",
+          "offset": {
+            "x": 350,
+            "y": 730
+          }
+        }
+      },
+      {
+        "name": "send_to_flex_sales",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue"
+          },
+          {
+            "event": "callFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 500,
+            "y": 1170
+          },
+          "workflow": "WWf38b96169a345444f59930c26b047631",
+          "channel": "TC7239cd75c1565ace1c1220ac56069c59",
+          "attributes": "{\"name\":\"bob\"}"
+        }
+      },
+      {
+        "name": "send_to_flex_support",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue"
+          },
+          {
+            "event": "callFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 920,
+            "y": 1180
+          },
+          "workflow": "WWb2995b0e748262fc6af1066886150b32",
+          "channel": "TC7239cd75c1565ace1c1220ac56069c59",
+          "attributes": "{\"name\":\"bob\"}"
+        }
+      },
+      {
+        "name": "say_play_1",
+        "type": "say-play",
+        "transitions": [
+          {
+            "next": "gather_reason",
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 10,
+            "y": 940
+          },
+          "loop": 1,
+          "say": "Sorry, that is not an available option"
+        }
+      },
+      {
+        "name": "getDetails",
+        "type": "run-function",
+        "transitions": [
+          {
+            "next": "welcome",
+            "event": "success"
+          },
+          {
+            "event": "fail"
+          }
+        ],
+        "properties": {
+          "service_sid": "ZSe6e3f2c0304c16e70a5da4560633d870",
+          "environment_sid": "ZEaabfa3ea359746912edf7d731a017985",
+          "offset": {
+            "x": 150,
+            "y": -120
+          },
+          "function_sid": "ZHd9fd2b791232e24838c612891e901d90",
+          "parameters": [
+            {
+              "value": "{{trigger.call.From}}",
+              "key": "from"
+            }
+          ],
+          "url": "https://static-assets-4043.twil.io/exampledip"
+        }
+      }
+    ],
+    "initial_state": "Trigger",
+    "flags": {
+      "allow_concurrent_calls": true
+    }
+  }
