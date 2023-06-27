@@ -18,5 +18,9 @@ export default class TrainingDatatabPlugin extends FlexPlugin {
    */
   async init(flex, manager) {
     flex.TaskCanvasTabs.Content.add(<DataOnCanvasComponent key="data-on-canvas-comp" label="External Data"/>);
+    
+    flex.MainHeader.defaultProps.logoUrl = "https://twiliodemos.s3.eu-west-1.amazonaws.com/Logos/Lux+Life.png";
   }
+
+  
 }

@@ -21,7 +21,7 @@ class DataOnCanvasComponent extends React.Component {
                 <td>Account ID: {task.attributes.accountId}</td>
             </tr>
             <tr>
-                <td>Balance: {task.attributes.balance}</td>
+                <td>Balance: {task.attributes.balance} €</td>
             </tr>
             </tbody>
           </table>
